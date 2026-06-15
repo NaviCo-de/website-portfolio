@@ -27,7 +27,7 @@ export default async function AdminDashboardPage() {
                   <p className="text-sm text-slate-400">{card.label}</p>
                   <p className="mt-2 text-3xl font-semibold text-slate-50">{data[card.key]}</p>
                 </div>
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-300/10 text-cyan-200">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-300/10 text-emerald-200">
                   <Icon aria-hidden="true" className="h-5 w-5" />
                 </div>
               </div>

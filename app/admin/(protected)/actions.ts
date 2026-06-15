@@ -13,20 +13,40 @@ import {
 } from "@/lib/validators";
 import { formBoolean, formString } from "@/lib/utils";
 
+const adminRouteAliases: Record<string, string[]> = {
+  "/admin/profile": ["/admin/hero"],
+  "/admin/hero": ["/admin/profile"],
+  "/admin/settings": ["/admin/hero"],
+  "/admin/social-links": ["/admin/socials"],
+  "/admin/socials": ["/admin/social-links"],
+};
+
 function revalidateAdmin(path: string) {
   revalidatePath("/");
   revalidatePath(path);
+  for (const alias of adminRouteAliases[path] ?? []) {
+    revalidatePath(alias);
+  }
   revalidatePath("/admin");
 }
 
 function singletonData(formData: FormData, keys: string[]) {
-  return Object.fromEntries(keys.map((key) => [key, formString(formData, key)]));
+  return Object.fromEntries(
+    keys.map((key) => [key, formString(formData, key)]),
+  );
 }
 
 export async function saveProfileAction(formData: FormData) {
   await requireAdminSession();
   const data = profileSchema.parse(
-    singletonData(formData, ["name", "headline", "shortIntro", "profileImageUrl", "cvUrl", "ownerEmail"]),
+    singletonData(formData, [
+      "name",
+      "headline",
+      "shortIntro",
+      "profileImageUrl",
+      "cvUrl",
+      "ownerEmail",
+    ]),
   );
   const current = await prisma.profile.findFirst();
 
@@ -41,7 +61,9 @@ export async function saveProfileAction(formData: FormData) {
 
 export async function saveAboutAction(formData: FormData) {
   await requireAdminSession();
-  const data = aboutSchema.parse(singletonData(formData, ["title", "subtitle", "description"]));
+  const data = aboutSchema.parse(
+    singletonData(formData, ["title", "subtitle", "description"]),
+  );
   const current = await prisma.about.findFirst();
 
   if (current) {
@@ -178,12 +200,17 @@ export async function deleteSocialLinkAction(formData: FormData) {
 
 export async function markMessageReadAction(formData: FormData) {
   await requireAdminSession();
-  await prisma.contactMessage.update({ where: { id: formString(formData, "id") }, data: { isRead: true } });
+  await prisma.contactMessage.update({
+    where: { id: formString(formData, "id") },
+    data: { isRead: true },
+  });
   revalidateAdmin("/admin/messages");
 }
 
 export async function deleteMessageAction(formData: FormData) {
   await requireAdminSession();
-  await prisma.contactMessage.delete({ where: { id: formString(formData, "id") } });
+  await prisma.contactMessage.delete({
+    where: { id: formString(formData, "id") },
+  });
   revalidateAdmin("/admin/messages");
 }

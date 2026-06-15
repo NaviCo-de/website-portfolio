@@ -11,7 +11,9 @@ const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  const adminEmail = (process.env.ADMIN_EMAIL || "admin@example.com").toLowerCase();
+  const adminEmail = (
+    process.env.ADMIN_EMAIL || "admin@example.com"
+  ).toLowerCase();
   const adminPassword = process.env.ADMIN_PASSWORD || "change-this-password";
   const ownerEmail = process.env.OWNER_EMAIL || "ari@example.com";
   const hashedPassword = await bcrypt.hash(adminPassword, 12);
@@ -19,7 +21,11 @@ async function main() {
   await prisma.adminUser.upsert({
     where: { email: adminEmail },
     update: { password: hashedPassword, name: "Portfolio Admin" },
-    create: { email: adminEmail, password: hashedPassword, name: "Portfolio Admin" },
+    create: {
+      email: adminEmail,
+      password: hashedPassword,
+      name: "Portfolio Admin",
+    },
   });
 
   const profile = await prisma.profile.findFirst();
@@ -31,7 +37,11 @@ async function main() {
     profileImageUrl: "/images/profile-placeholder.svg",
     ownerEmail,
   };
-  if (profile) await prisma.profile.update({ where: { id: profile.id }, data: profileData });
+  if (profile)
+    await prisma.profile.update({
+      where: { id: profile.id },
+      data: profileData,
+    });
   else await prisma.profile.create({ data: profileData });
 
   const about = await prisma.about.findFirst();
@@ -41,30 +51,50 @@ async function main() {
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Integer vitae justo eget magna fermentum iaculis. Nunc sed blandit libero volutpat sed cras ornare arcu dui vivamus.",
   };
-  if (about) await prisma.about.update({ where: { id: about.id }, data: aboutData });
+  if (about)
+    await prisma.about.update({ where: { id: about.id }, data: aboutData });
   else await prisma.about.create({ data: aboutData });
 
   const settings = await prisma.siteSetting.findFirst();
   const settingsData = {
-    siteTitle: "Ari Darrell Muljono - Fullstack Engineer",
+    siteTitle: "Ari Darrell Muljono | Fullstack Engineer Portfolio",
     metaDescription:
-      "Personal portfolio of Ari Darrell Muljono, a Fullstack Engineer, DevOps Engineer, and Product Engineer.",
+      "Professional portfolio website of Ari Darrell Muljono, showcasing experience, projects, and engineering expertise.",
     ownerEmail,
     heroRoles: ["Fullstack Engineer", "DevOps Engineer", "Product Engineer"],
-    primaryColor: "#38BDF8",
-    seoTitle: "Ari Darrell Muljono - Fullstack Engineer",
+    primaryColor: "#6EE7B7",
+    seoTitle: "Ari Darrell Muljono | Fullstack Engineer Portfolio",
     seoDescription:
-      "Personal portfolio of Ari Darrell Muljono, a Fullstack Engineer, DevOps Engineer, and Product Engineer.",
+      "Professional portfolio website of Ari Darrell Muljono, showcasing experience, projects, and engineering expertise.",
   };
-  if (settings) await prisma.siteSetting.update({ where: { id: settings.id }, data: settingsData });
+  if (settings)
+    await prisma.siteSetting.update({
+      where: { id: settings.id },
+      data: settingsData,
+    });
   else await prisma.siteSetting.create({ data: settingsData });
 
   await prisma.socialLink.deleteMany();
   await prisma.socialLink.createMany({
     data: [
-      { platform: "LinkedIn", url: "https://linkedin.com/in/ari-darrell-muljono", icon: "linkedin", sortOrder: 1 },
-      { platform: "Instagram", url: "https://instagram.com/ari.darrell", icon: "instagram", sortOrder: 2 },
-      { platform: "GitHub", url: "https://github.com/aridarrell", icon: "github", sortOrder: 3 },
+      {
+        platform: "LinkedIn",
+        url: "https://linkedin.com/in/ari-darrell-muljono",
+        icon: "linkedin",
+        sortOrder: 1,
+      },
+      {
+        platform: "Instagram",
+        url: "https://instagram.com/ari.darrell",
+        icon: "instagram",
+        sortOrder: 2,
+      },
+      {
+        platform: "GitHub",
+        url: "https://github.com/aridarrell",
+        icon: "github",
+        sortOrder: 3,
+      },
     ],
   });
 
@@ -106,7 +136,8 @@ async function main() {
     data: [
       {
         title: "Personal Portfolio Website",
-        description: "A modern portfolio website built with Next.js, PostgreSQL, Tailwind CSS, and Framer Motion.",
+        description:
+          "A modern portfolio website built with Next.js, PostgreSQL, Tailwind CSS, and Framer Motion.",
         thumbnailUrl: "/images/project-portfolio.svg",
         githubUrl: "https://github.com/example/portfolio",
         liveDemoUrl: "https://example.com",
@@ -115,7 +146,8 @@ async function main() {
       },
       {
         title: "Task Management App",
-        description: "A productivity app for managing tasks, deadlines, and project collaboration.",
+        description:
+          "A productivity app for managing tasks, deadlines, and project collaboration.",
         thumbnailUrl: "/images/project-task.svg",
         githubUrl: "https://github.com/example/task-management",
         techStack: ["Next.js", "Prisma", "PostgreSQL", "Tailwind CSS"],
@@ -123,7 +155,8 @@ async function main() {
       },
       {
         title: "DevOps Deployment Dashboard",
-        description: "A dashboard for monitoring deployments, server status, and CI/CD workflow activity.",
+        description:
+          "A dashboard for monitoring deployments, server status, and CI/CD workflow activity.",
         thumbnailUrl: "/images/project-devops.svg",
         githubUrl: "https://github.com/example/devops-dashboard",
         techStack: ["Next.js", "Docker", "PostgreSQL", "API"],
@@ -131,7 +164,8 @@ async function main() {
       },
       {
         title: "Product Analytics Platform",
-        description: "A simple analytics platform to track product usage, user activity, and engagement metrics.",
+        description:
+          "A simple analytics platform to track product usage, user activity, and engagement metrics.",
         thumbnailUrl: "/images/project-analytics.svg",
         githubUrl: "https://github.com/example/product-analytics",
         techStack: ["Next.js", "PostgreSQL", "Chart.js", "Tailwind CSS"],

@@ -65,7 +65,8 @@ export const fallbackPortfolioData: PortfolioData = {
     {
       id: "fallback-project-2",
       title: "Task Management App",
-      description: "A productivity app for managing tasks, deadlines, and project collaboration.",
+      description:
+        "A productivity app for managing tasks, deadlines, and project collaboration.",
       thumbnailUrl: "/images/project-task.svg",
       githubUrl: "https://github.com/example/task-management",
       liveDemoUrl: null,
@@ -74,7 +75,8 @@ export const fallbackPortfolioData: PortfolioData = {
     {
       id: "fallback-project-3",
       title: "DevOps Deployment Dashboard",
-      description: "A dashboard for monitoring deployments, server status, and CI/CD workflow activity.",
+      description:
+        "A dashboard for monitoring deployments, server status, and CI/CD workflow activity.",
       thumbnailUrl: "/images/project-devops.svg",
       githubUrl: "https://github.com/example/devops-dashboard",
       liveDemoUrl: null,
@@ -92,19 +94,34 @@ export const fallbackPortfolioData: PortfolioData = {
     },
   ],
   socialLinks: [
-    { id: "fallback-social-linkedin", platform: "LinkedIn", url: "https://linkedin.com/in/ari-darrell-muljono", icon: "linkedin" },
-    { id: "fallback-social-instagram", platform: "Instagram", url: "https://instagram.com/ari.darrell", icon: "instagram" },
-    { id: "fallback-social-github", platform: "GitHub", url: "https://github.com/aridarrell", icon: "github" },
+    {
+      id: "fallback-social-linkedin",
+      platform: "LinkedIn",
+      url: "https://linkedin.com/in/ari-darrell-muljono",
+      icon: "linkedin",
+    },
+    {
+      id: "fallback-social-instagram",
+      platform: "Instagram",
+      url: "https://instagram.com/ari.darrell",
+      icon: "instagram",
+    },
+    {
+      id: "fallback-social-github",
+      platform: "GitHub",
+      url: "https://github.com/aridarrell",
+      icon: "github",
+    },
   ],
   settings: {
-    siteTitle: "Ari Darrell Muljono - Fullstack Engineer",
+    siteTitle: "Ari Darrell Muljono | Fullstack Engineer Portfolio",
     metaDescription:
-      "Personal portfolio of Ari Darrell Muljono, a Fullstack Engineer, DevOps Engineer, and Product Engineer.",
+      "Professional portfolio website of Ari Darrell Muljono, showcasing experience, projects, and engineering expertise.",
     ownerEmail: "ari@example.com",
     heroRoles: ["Fullstack Engineer", "DevOps Engineer", "Product Engineer"],
-    primaryColor: "#38BDF8",
-    seoTitle: "Ari Darrell Muljono - Fullstack Engineer",
+    primaryColor: "#6EE7B7",
+    seoTitle: "Ari Darrell Muljono | Fullstack Engineer Portfolio",
     seoDescription:
-      "Personal portfolio of Ari Darrell Muljono, a Fullstack Engineer, DevOps Engineer, and Product Engineer.",
+      "Professional portfolio website of Ari Darrell Muljono, showcasing experience, projects, and engineering expertise.",
   },
 };

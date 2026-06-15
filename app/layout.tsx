@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXTAUTH_URL || "http://localhost:3000"),
-  title: "Ari Darrell Muljono - Fullstack Engineer",
+  title: "Ari Darrell Muljono | Fullstack Engineer Portfolio",
   description:
-    "Personal portfolio of Ari Darrell Muljono, a Fullstack Engineer, DevOps Engineer, and Product Engineer.",
+    "Professional portfolio website of Ari Darrell Muljono, showcasing experience, projects, and engineering expertise.",
   keywords: [
     "Ari Darrell Muljono",
     "Fullstack Engineer",
@@ -27,25 +27,33 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Ari Darrell Muljono - Fullstack Engineer",
+    title: "Ari Darrell Muljono | Fullstack Engineer Portfolio",
     description:
-      "Personal portfolio of Ari Darrell Muljono, a Fullstack Engineer, DevOps Engineer, and Product Engineer.",
+      "Professional portfolio website of Ari Darrell Muljono, showcasing experience, projects, and engineering expertise.",
     url: "/",
     siteName: "Ari Darrell Muljono Portfolio",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ari Darrell Muljono - Fullstack Engineer",
+    title: "Ari Darrell Muljono | Fullstack Engineer Portfolio",
     description:
-      "Personal portfolio of Ari Darrell Muljono, a Fullstack Engineer, DevOps Engineer, and Product Engineer.",
+      "Professional portfolio website of Ari Darrell Muljono, showcasing experience, projects, and engineering expertise.",
   },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full bg-slate-950 font-sans text-slate-50">{children}</body>
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+      <body className="min-h-full bg-[#050807] font-sans text-slate-50">
+        {children}
+      </body>
     </html>
   );
 }
