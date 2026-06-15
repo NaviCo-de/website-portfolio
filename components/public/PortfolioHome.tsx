@@ -26,7 +26,6 @@ const navItems = [
   { href: "#experience", label: "Experience", sectionId: "experience" },
   { href: "#projects", label: "Projects", sectionId: "projects" },
   { href: "#contact", label: "Contact", sectionId: "contact" },
-  { href: "/admin/login", label: "Admin/Login", sectionId: "admin" },
 ];
 
 function SocialIcon({ icon }: { icon: string | null }) {
