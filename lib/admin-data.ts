@@ -1,14 +1,88 @@
-import type {
-  About,
-  ContactMessage,
-  Experience,
-  Profile,
-  Project,
-  SiteSetting,
-  SocialLink,
-} from "@prisma/client";
 import { fallbackPortfolioData } from "@/lib/fallback-data";
 import { prisma } from "@/lib/prisma";
+
+type Profile = {
+  id: string;
+  name: string;
+  headline: string | null;
+  shortIntro: string | null;
+  profileImageUrl: string | null;
+  cvUrl: string | null;
+  ownerEmail: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+type About = {
+  id: string;
+  title: string;
+  subtitle: string | null;
+  description: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+type Experience = {
+  id: string;
+  position: string;
+  organization: string;
+  location: string | null;
+  startDate: Date;
+  endDate: Date | null;
+  isPresent: boolean;
+  description: string;
+  sortOrder: number;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+type Project = {
+  id: string;
+  title: string;
+  description: string;
+  thumbnailUrl: string | null;
+  githubUrl: string;
+  liveDemoUrl: string | null;
+  techStack: string[];
+  isFeatured: boolean;
+  sortOrder: number;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+type SocialLink = {
+  id: string;
+  platform: string;
+  url: string;
+  icon: string | null;
+  isActive: boolean;
+  sortOrder: number;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+type ContactMessage = {
+  id: string;
+  email: string;
+  subject: string;
+  message: string;
+  isRead: boolean;
+  ipAddress: string | null;
+  createdAt: Date;
+};
+
+type SiteSetting = {
+  id: string;
+  siteTitle: string;
+  metaDescription: string | null;
+  ownerEmail: string | null;
+  heroRoles: string[];
+  primaryColor: string | null;
+  seoTitle: string | null;
+  seoDescription: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 type AdminDashboardData = {
   experiences: number;
