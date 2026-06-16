@@ -44,25 +44,8 @@ body {
   border-radius: 34% 18% 28% 22% / 20% 28% 18% 32%;
 }
 
-.project-marquee-track {
-  animation: project-marquee 38s linear infinite;
-}
-
-.project-marquee:hover .project-marquee-track {
-  animation-play-state: paused;
-}
-
 .animate-cursor {
   animation: cursor-blink 1s steps(2, start) infinite;
-}
-
-@keyframes project-marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
 }
 
 @keyframes cursor-blink {

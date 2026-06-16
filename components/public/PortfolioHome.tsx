@@ -2,10 +2,12 @@
 
 import Image from "next/image";
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   ArrowDown,
   CalendarDays,
+  ChevronLeft,
+  ChevronRight,
   Code2,
   Download,
   ExternalLink,
@@ -19,6 +21,7 @@ import { FaGithub, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import { useTypewriter } from "@/hooks/useTypewriter";
 import type {
   PortfolioData,
+  PublicProject,
   PublicSocialLink,
   PublicTechStack,
 } from "@/lib/types";
@@ -466,10 +469,7 @@ function TechStackSection({ data }: { data: PortfolioData }) {
   }, [techStacks]);
 
   return (
-    <AnimatedSection
-      id="tech-stack"
-      className="px-5 py-20 sm:px-8 lg:px-10"
-    >
+    <AnimatedSection id="tech-stack" className="px-5 py-20 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-7xl">
         <div className="mb-12 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
@@ -611,18 +611,259 @@ function TechStackSection({ data }: { data: PortfolioData }) {
   );
 }
 
-function ProjectsSection({ data }: { data: PortfolioData }) {
-  const projects = data.projects;
-  const carouselProjects = useMemo(
-    () => [...projects, ...projects],
-    [projects],
+function ProjectPreview({
+  project,
+  side,
+  onClick,
+}: {
+  project: PublicProject;
+  side: "left" | "right";
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={"Show " + project.title}
+      onClick={onClick}
+      className={cn(
+        "absolute top-12 z-0 hidden h-[24rem] w-[21rem] overflow-hidden rounded-2xl border border-slate-400/15 bg-slate-900 text-left opacity-30 shadow-xl shadow-slate-950/30 transition duration-300 hover:opacity-50 focus:outline-none focus:ring-2 focus:ring-emerald-300 lg:block",
+        side === "left"
+          ? "left-0 -translate-x-64 xl:-translate-x-72"
+          : "right-0 translate-x-64 xl:translate-x-72",
+      )}
+    >
+      <div className="relative h-full">
+        <Image
+          src={project.thumbnailUrl || "/images/project-portfolio.svg"}
+          alt={project.title + " preview"}
+          fill
+          sizes="23rem"
+          className="object-cover grayscale"
+        />
+        <div className="absolute inset-0 bg-slate-950/55" />
+        <div
+          className={cn(
+            "absolute inset-y-0 w-20 bg-gradient-to-r from-[#050807] to-transparent",
+            side === "right" && "right-0 rotate-180",
+          )}
+          aria-hidden="true"
+        />
+        <div className="absolute inset-x-0 bottom-0 p-5">
+          <p className="text-sm font-semibold text-slate-100">
+            {project.title}
+          </p>
+          <p className="mt-1 text-xs text-slate-400">Preview</p>
+        </div>
+      </div>
+    </button>
   );
+}
+
+function ActiveProjectCard({
+  project,
+  direction,
+  reducedMotion,
+}: {
+  project: PublicProject;
+  direction: number;
+  reducedMotion: boolean;
+}) {
+  return (
+    <motion.article
+      initial={
+        reducedMotion
+          ? false
+          : { opacity: 0, x: direction > 0 ? 48 : -48, scale: 0.98 }
+      }
+      animate={{ opacity: 1, x: 0, scale: 1 }}
+      exit={
+        reducedMotion
+          ? { opacity: 1 }
+          : { opacity: 0, x: direction > 0 ? -48 : 48, scale: 0.98 }
+      }
+      transition={{ duration: 0.38, ease: "easeOut" }}
+      className="relative z-10 mx-auto grid w-full max-w-5xl overflow-hidden rounded-2xl border border-slate-400/15 bg-slate-900 shadow-2xl shadow-slate-950/40 md:grid-cols-[1.08fr_0.92fr]"
+    >
+      <div className="relative aspect-[16/10] min-h-64 bg-slate-950 md:aspect-auto md:min-h-[25rem]">
+        <Image
+          src={project.thumbnailUrl || "/images/project-portfolio.svg"}
+          alt={project.title + " preview"}
+          fill
+          sizes="(min-width: 1024px) 34rem, 100vw"
+          className="object-cover"
+        />
+      </div>
+      <div className="flex min-h-[25rem] flex-col p-6 md:p-8">
+        <div>
+          <p className="text-xs font-semibold uppercase text-emerald-300">
+            Featured Project
+          </p>
+          <h3 className="mt-3 text-2xl font-semibold text-slate-50">
+            {project.title}
+          </h3>
+          <p className="mt-4 text-sm leading-7 text-slate-300">
+            {project.description}
+          </p>
+        </div>
+
+        <div className="mt-6 flex flex-wrap gap-2">
+          {project.techStack.map((tech) => (
+            <span
+              key={tech}
+              className="rounded-full border border-slate-500/20 bg-slate-950/70 px-3 py-1 text-xs text-slate-300"
+            >
+              {tech}
+            </span>
+          ))}
+        </div>
+
+        <div className="mt-auto flex flex-wrap gap-3 pt-8">
+          <a
+            href={project.githubUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex h-10 items-center gap-2 rounded-xl bg-slate-50 px-4 text-sm font-semibold text-slate-950 transition hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-300"
+          >
+            <FaGithub aria-hidden="true" className="h-4 w-4" />
+            View GitHub
+          </a>
+          {project.liveDemoUrl ? (
+            <a
+              href={project.liveDemoUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-400/25 px-4 text-sm font-semibold text-slate-100 transition hover:border-emerald-300/50 hover:text-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-300"
+            >
+              <ExternalLink aria-hidden="true" className="h-4 w-4" />
+              Live Demo
+            </a>
+          ) : null}
+        </div>
+      </div>
+    </motion.article>
+  );
+}
+
+function ProjectCarousel({ projects }: { projects: PublicProject[] }) {
+  const [activeProjectIndex, setActiveProjectIndex] = useState(0);
+  const [projectDirection, setProjectDirection] = useState(1);
+  const reducedMotion = useReducedMotion();
+  const projectCount = projects.length;
+  const safeActiveProjectIndex =
+    projectCount > 0 ? Math.min(activeProjectIndex, projectCount - 1) : 0;
+
+  if (projectCount === 0) {
+    return null;
+  }
+
+  const activeProject = projects[safeActiveProjectIndex]!;
+  const previousProjectIndex =
+    (safeActiveProjectIndex - 1 + projectCount) % projectCount;
+  const nextProjectIndex = (safeActiveProjectIndex + 1) % projectCount;
+  const previousProject = projects[previousProjectIndex] ?? activeProject;
+  const nextProject = projects[nextProjectIndex] ?? activeProject;
+  const hasMultipleProjects = projectCount > 1;
+
+  function goToPreviousProject() {
+    setProjectDirection(-1);
+    setActiveProjectIndex(previousProjectIndex);
+  }
+
+  function goToNextProject() {
+    setProjectDirection(1);
+    setActiveProjectIndex(nextProjectIndex);
+  }
+
+  function goToProject(index: number) {
+    if (index === safeActiveProjectIndex) {
+      return;
+    }
+
+    setProjectDirection(index > safeActiveProjectIndex ? 1 : -1);
+    setActiveProjectIndex(index);
+  }
 
   return (
-    <AnimatedSection
-      id="projects"
-      className="overflow-hidden px-5 py-20 sm:px-8 lg:px-10"
-    >
+    <div className="relative mx-auto max-w-7xl overflow-hidden py-2 lg:px-14">
+      <div className="relative min-h-[35rem] py-4 lg:min-h-[29rem]">
+        {hasMultipleProjects ? (
+          <>
+            <ProjectPreview
+              project={previousProject}
+              side="left"
+              onClick={goToPreviousProject}
+            />
+            <ProjectPreview
+              project={nextProject}
+              side="right"
+              onClick={goToNextProject}
+            />
+          </>
+        ) : null}
+
+        <AnimatePresence mode="wait" initial={false}>
+          <ActiveProjectCard
+            key={activeProject.id}
+            project={activeProject}
+            direction={projectDirection}
+            reducedMotion={Boolean(reducedMotion)}
+          />
+        </AnimatePresence>
+
+        {hasMultipleProjects ? (
+          <>
+            <button
+              type="button"
+              aria-label="Show previous project"
+              onClick={goToPreviousProject}
+              className="absolute left-2 top-1/2 z-20 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-slate-400/20 bg-slate-950/80 text-slate-100 shadow-lg shadow-slate-950/35 backdrop-blur transition hover:border-emerald-300/60 hover:text-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-300 lg:left-0"
+            >
+              <ChevronLeft aria-hidden="true" className="h-5 w-5" />
+            </button>
+            <button
+              type="button"
+              aria-label="Show next project"
+              onClick={goToNextProject}
+              className="absolute right-2 top-1/2 z-20 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-slate-400/20 bg-slate-950/80 text-slate-100 shadow-lg shadow-slate-950/35 backdrop-blur transition hover:border-emerald-300/60 hover:text-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-300 lg:right-0"
+            >
+              <ChevronRight aria-hidden="true" className="h-5 w-5" />
+            </button>
+          </>
+        ) : null}
+      </div>
+
+      {hasMultipleProjects ? (
+        <div className="mt-4 flex items-center justify-center gap-2">
+          {projects.map((project, index) => {
+            const isActive = index === safeActiveProjectIndex;
+
+            return (
+              <button
+                key={project.id}
+                type="button"
+                aria-label={"Show " + project.title}
+                aria-current={isActive ? "true" : undefined}
+                onClick={() => goToProject(index)}
+                className={cn(
+                  "h-2.5 rounded-full transition focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:ring-offset-2 focus:ring-offset-slate-950",
+                  isActive
+                    ? "w-8 bg-emerald-300"
+                    : "w-2.5 bg-slate-600 hover:bg-slate-400",
+                )}
+              />
+            );
+          })}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function ProjectsSection({ data }: { data: PortfolioData }) {
+  const projects = data.projects;
+
+  return (
+    <AnimatedSection id="projects" className="px-5 py-20 sm:px-8 lg:px-10">
       <div className="mx-auto max-w-7xl">
         <div className="mb-12 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
@@ -643,77 +884,12 @@ function ProjectsSection({ data }: { data: PortfolioData }) {
             No projects available yet.
           </p>
         ) : (
-          <div className="project-marquee -mx-5 overflow-hidden py-2 sm:-mx-8 lg:-mx-10">
-            <div className="project-marquee-track flex w-max gap-5 px-5 sm:px-8 lg:px-10">
-              {carouselProjects.map((project, index) => (
-                <article
-                  key={`${project.id}-${index}`}
-                  className="w-[19rem] shrink-0 overflow-hidden rounded-2xl border border-slate-400/15 bg-slate-900 shadow-xl shadow-slate-950/35 transition hover:-translate-y-1 hover:border-emerald-300/45 hover:shadow-emerald-950/35 sm:w-[22rem]"
-                >
-                  <div className="relative aspect-[16/9] overflow-hidden bg-slate-950">
-                    <Image
-                      src={
-                        project.thumbnailUrl || "/images/project-portfolio.svg"
-                      }
-                      alt={project.title + " preview"}
-                      fill
-                      sizes="(min-width: 640px) 22rem, 19rem"
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="p-5">
-                    <h3 className="text-lg font-semibold text-slate-50">
-                      {project.title}
-                    </h3>
-                    <p className="mt-3 min-h-20 text-sm leading-6 text-slate-300">
-                      {project.description}
-                    </p>
-                    <div className="mt-4 flex min-h-16 flex-wrap content-start gap-2">
-                      {project.techStack.map((tech) => (
-                        <span
-                          key={tech}
-                          className="rounded-full border border-slate-500/20 bg-slate-950/70 px-3 py-1 text-xs text-slate-300"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                    <div className="mt-5 flex flex-wrap gap-3">
-                      <a
-                        href={project.githubUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex h-10 items-center gap-2 rounded-xl bg-slate-50 px-4 text-sm font-semibold text-slate-950 transition hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-300"
-                      >
-                        <FaGithub aria-hidden="true" className="h-4 w-4" />
-                        View GitHub
-                      </a>
-                      {project.liveDemoUrl ? (
-                        <a
-                          href={project.liveDemoUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-400/25 px-4 text-sm font-semibold text-slate-100 transition hover:border-emerald-300/50 hover:text-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-300"
-                        >
-                          <ExternalLink
-                            aria-hidden="true"
-                            className="h-4 w-4"
-                          />
-                          Live Demo
-                        </a>
-                      ) : null}
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
+          <ProjectCarousel projects={projects} />
         )}
       </div>
     </AnimatedSection>
   );
 }
-
 function ContactSection() {
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "error"
