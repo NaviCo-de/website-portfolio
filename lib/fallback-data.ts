@@ -1,5 +1,8 @@
 import type { PortfolioData } from "@/lib/types";
 
+const cloudinaryIcon = (path: string) =>
+  `https://res.cloudinary.com/demo/image/fetch/f_png,w_256/https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${path}`;
+
 export const fallbackPortfolioData: PortfolioData = {
   profile: {
     name: "Ari Darrell Muljono",
@@ -111,6 +114,82 @@ export const fallbackPortfolioData: PortfolioData = {
       platform: "GitHub",
       url: "https://github.com/aridarrell",
       icon: "github",
+    },
+  ],
+  techStacks: [
+    {
+      id: "fallback-tech-next",
+      name: "Next.js",
+      category: "Frontend Framework",
+      imageUrl: cloudinaryIcon("nextjs/nextjs-original.svg"),
+    },
+    {
+      id: "fallback-tech-nest",
+      name: "Nest.js",
+      category: "Backend Framework",
+      imageUrl: cloudinaryIcon("nestjs/nestjs-original.svg"),
+    },
+    {
+      id: "fallback-tech-aws",
+      name: "AWS",
+      category: "Cloud & Infrastructure",
+      imageUrl: cloudinaryIcon(
+        "amazonwebservices/amazonwebservices-original-wordmark.svg",
+      ),
+    },
+    {
+      id: "fallback-tech-linux",
+      name: "Linux",
+      category: "Cloud & Infrastructure",
+      imageUrl: cloudinaryIcon("linux/linux-original.svg"),
+    },
+    {
+      id: "fallback-tech-tailwind",
+      name: "Tailwind CSS",
+      category: "Frontend Framework",
+      imageUrl: cloudinaryIcon("tailwindcss/tailwindcss-original.svg"),
+    },
+    {
+      id: "fallback-tech-postgresql",
+      name: "PostgreSQL",
+      category: "Data Layer",
+      imageUrl: cloudinaryIcon("postgresql/postgresql-original.svg"),
+    },
+    {
+      id: "fallback-tech-python",
+      name: "Python",
+      category: "Programming Language",
+      imageUrl: cloudinaryIcon("python/python-original.svg"),
+    },
+    {
+      id: "fallback-tech-prisma",
+      name: "Prisma",
+      category: "Data Layer",
+      imageUrl: cloudinaryIcon("prisma/prisma-original.svg"),
+    },
+    {
+      id: "fallback-tech-java",
+      name: "Java",
+      category: "Programming Language",
+      imageUrl: cloudinaryIcon("java/java-original.svg"),
+    },
+    {
+      id: "fallback-tech-docker",
+      name: "Docker",
+      category: "Cloud & Infrastructure",
+      imageUrl: cloudinaryIcon("docker/docker-original.svg"),
+    },
+    {
+      id: "fallback-tech-git",
+      name: "Git & GitHub",
+      category: "Developer Workflow",
+      imageUrl: cloudinaryIcon("git/git-original.svg"),
+    },
+    {
+      id: "fallback-tech-postman",
+      name: "Postman",
+      category: "Developer Workflow",
+      imageUrl: cloudinaryIcon("postman/postman-original.svg"),
     },
   ],
   settings: {

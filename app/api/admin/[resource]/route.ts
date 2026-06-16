@@ -8,6 +8,7 @@ import {
   profileSchema,
   settingsSchema,
   socialLinkSchema,
+  techStackSchema,
 } from "@/lib/validators";
 
 export const dynamic = "force-dynamic";
@@ -19,7 +20,10 @@ type ResourceContext = {
 async function requireApiSession() {
   const session = await getAdminSession();
   if (!session) {
-    return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    return NextResponse.json(
+      { success: false, message: "Unauthorized" },
+      { status: 401 },
+    );
   }
 
   return null;
@@ -34,7 +38,10 @@ async function readJson(request: NextRequest) {
 }
 
 function badResource() {
-  return NextResponse.json({ success: false, message: "Resource not found." }, { status: 404 });
+  return NextResponse.json(
+    { success: false, message: "Resource not found." },
+    { status: 404 },
+  );
 }
 
 async function upsertProfile(body: unknown) {
@@ -48,7 +55,9 @@ async function upsertProfile(body: unknown) {
 async function upsertAbout(body: unknown) {
   const data = aboutSchema.parse(body);
   const current = await prisma.about.findFirst();
-  return current ? prisma.about.update({ where: { id: current.id }, data }) : prisma.about.create({ data });
+  return current
+    ? prisma.about.update({ where: { id: current.id }, data })
+    : prisma.about.create({ data });
 }
 
 async function upsertSettings(body: unknown) {
@@ -67,19 +76,59 @@ export async function GET(_request: NextRequest, context: ResourceContext) {
 
   switch (resource) {
     case "profile":
-      return NextResponse.json({ success: true, data: await prisma.profile.findFirst({ orderBy: { updatedAt: "desc" } }) });
+      return NextResponse.json({
+        success: true,
+        data: await prisma.profile.findFirst({
+          orderBy: { updatedAt: "desc" },
+        }),
+      });
     case "about":
-      return NextResponse.json({ success: true, data: await prisma.about.findFirst({ orderBy: { updatedAt: "desc" } }) });
+      return NextResponse.json({
+        success: true,
+        data: await prisma.about.findFirst({ orderBy: { updatedAt: "desc" } }),
+      });
     case "settings":
-      return NextResponse.json({ success: true, data: await prisma.siteSetting.findFirst({ orderBy: { updatedAt: "desc" } }) });
+      return NextResponse.json({
+        success: true,
+        data: await prisma.siteSetting.findFirst({
+          orderBy: { updatedAt: "desc" },
+        }),
+      });
     case "experiences":
-      return NextResponse.json({ success: true, data: await prisma.experience.findMany({ orderBy: [{ startDate: "desc" }, { createdAt: "desc" }] }) });
+      return NextResponse.json({
+        success: true,
+        data: await prisma.experience.findMany({
+          orderBy: [{ startDate: "desc" }, { createdAt: "desc" }],
+        }),
+      });
     case "projects":
-      return NextResponse.json({ success: true, data: await prisma.project.findMany({ orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }] }) });
+      return NextResponse.json({
+        success: true,
+        data: await prisma.project.findMany({
+          orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+        }),
+      });
     case "social-links":
-      return NextResponse.json({ success: true, data: await prisma.socialLink.findMany({ orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }] }) });
+      return NextResponse.json({
+        success: true,
+        data: await prisma.socialLink.findMany({
+          orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+        }),
+      });
+    case "tech-stack":
+      return NextResponse.json({
+        success: true,
+        data: await prisma.techStack.findMany({
+          orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+        }),
+      });
     case "messages":
-      return NextResponse.json({ success: true, data: await prisma.contactMessage.findMany({ orderBy: { createdAt: "desc" } }) });
+      return NextResponse.json({
+        success: true,
+        data: await prisma.contactMessage.findMany({
+          orderBy: { createdAt: "desc" },
+        }),
+      });
     default:
       return badResource();
   }
@@ -95,22 +144,68 @@ export async function POST(request: NextRequest, context: ResourceContext) {
   try {
     switch (resource) {
       case "profile":
-        return NextResponse.json({ success: true, data: await upsertProfile(body) });
+        return NextResponse.json({
+          success: true,
+          data: await upsertProfile(body),
+        });
       case "about":
-        return NextResponse.json({ success: true, data: await upsertAbout(body) });
+        return NextResponse.json({
+          success: true,
+          data: await upsertAbout(body),
+        });
       case "settings":
-        return NextResponse.json({ success: true, data: await upsertSettings(body) });
+        return NextResponse.json({
+          success: true,
+          data: await upsertSettings(body),
+        });
       case "experiences":
-        return NextResponse.json({ success: true, data: await prisma.experience.create({ data: experienceSchema.parse(body) }) }, { status: 201 });
+        return NextResponse.json(
+          {
+            success: true,
+            data: await prisma.experience.create({
+              data: experienceSchema.parse(body),
+            }),
+          },
+          { status: 201 },
+        );
       case "projects":
-        return NextResponse.json({ success: true, data: await prisma.project.create({ data: projectSchema.parse(body) }) }, { status: 201 });
+        return NextResponse.json(
+          {
+            success: true,
+            data: await prisma.project.create({
+              data: projectSchema.parse(body),
+            }),
+          },
+          { status: 201 },
+        );
       case "social-links":
-        return NextResponse.json({ success: true, data: await prisma.socialLink.create({ data: socialLinkSchema.parse(body) }) }, { status: 201 });
+        return NextResponse.json(
+          {
+            success: true,
+            data: await prisma.socialLink.create({
+              data: socialLinkSchema.parse(body),
+            }),
+          },
+          { status: 201 },
+        );
+      case "tech-stack":
+        return NextResponse.json(
+          {
+            success: true,
+            data: await prisma.techStack.create({
+              data: techStackSchema.parse(body),
+            }),
+          },
+          { status: 201 },
+        );
       default:
         return badResource();
     }
   } catch {
-    return NextResponse.json({ success: false, message: "Invalid request payload." }, { status: 400 });
+    return NextResponse.json(
+      { success: false, message: "Invalid request payload." },
+      { status: 400 },
+    );
   }
 }
 

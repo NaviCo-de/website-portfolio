@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import {
+  Code2,
   FolderKanban,
   Inbox,
   LayoutDashboard,
@@ -23,6 +24,7 @@ const navigation = [
   { href: "/admin/about", label: "About", icon: Sparkles },
   { href: "/admin/experiences", label: "Experiences", icon: WalletCards },
   { href: "/admin/projects", label: "Projects", icon: FolderKanban },
+  { href: "/admin/tech-stack", label: "Tech Stack", icon: Code2 },
   { href: "/admin/socials", label: "Social Links", icon: Share2 },
   { href: "/admin/messages", label: "Messages", icon: Inbox },
   { href: "/admin/settings", label: "Settings", icon: Settings },

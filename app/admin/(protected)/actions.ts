@@ -10,6 +10,7 @@ import {
   profileSchema,
   settingsSchema,
   socialLinkSchema,
+  techStackSchema,
 } from "@/lib/validators";
 import { formBoolean, formString } from "@/lib/utils";
 
@@ -19,6 +20,7 @@ const adminRouteAliases: Record<string, string[]> = {
   "/admin/settings": ["/admin/hero"],
   "/admin/social-links": ["/admin/socials"],
   "/admin/socials": ["/admin/social-links"],
+  "/admin/tech-stack": ["/admin/skills"],
 };
 
 function revalidateAdmin(path: string) {
@@ -196,6 +198,37 @@ export async function deleteSocialLinkAction(formData: FormData) {
   await requireAdminSession();
   await prisma.socialLink.delete({ where: { id: formString(formData, "id") } });
   revalidateAdmin("/admin/social-links");
+}
+
+function techStackData(formData: FormData) {
+  return {
+    name: formString(formData, "name"),
+    category: formString(formData, "category"),
+    imageUrl: formString(formData, "imageUrl"),
+    isActive: formBoolean(formData, "isActive"),
+    sortOrder: Number(formString(formData, "sortOrder") || 0),
+  };
+}
+
+export async function createTechStackAction(formData: FormData) {
+  await requireAdminSession();
+  const data = techStackSchema.parse(techStackData(formData));
+  await prisma.techStack.create({ data });
+  revalidateAdmin("/admin/tech-stack");
+}
+
+export async function updateTechStackAction(formData: FormData) {
+  await requireAdminSession();
+  const id = formString(formData, "id");
+  const data = techStackSchema.parse(techStackData(formData));
+  await prisma.techStack.update({ where: { id }, data });
+  revalidateAdmin("/admin/tech-stack");
+}
+
+export async function deleteTechStackAction(formData: FormData) {
+  await requireAdminSession();
+  await prisma.techStack.delete({ where: { id: formString(formData, "id") } });
+  revalidateAdmin("/admin/tech-stack");
 }
 
 export async function markMessageReadAction(formData: FormData) {

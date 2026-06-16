@@ -37,17 +37,17 @@ model About {
 }
 
 model Experience {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   position     String
   organization String
   location     String?
   startDate    DateTime
   endDate      DateTime?
-  isPresent    Boolean  @default(false)
+  isPresent    Boolean   @default(false)
   description  String
-  sortOrder    Int      @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  sortOrder    Int       @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model Project {
@@ -69,6 +69,17 @@ model SocialLink {
   platform  String
   url       String
   icon      String?
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TechStack {
+  id        String   @id @default(cuid())
+  name      String
+  category  String
+  imageUrl  String?
   isActive  Boolean  @default(true)
   sortOrder Int      @default(0)
   createdAt DateTime @default(now())

@@ -41,6 +41,13 @@ export type PublicSocialLink = {
   icon: string | null;
 };
 
+export type PublicTechStack = {
+  id: string;
+  name: string;
+  category: string;
+  imageUrl: string | null;
+};
+
 export type PublicSettings = {
   siteTitle: string;
   metaDescription: string | null;
@@ -57,6 +64,7 @@ export type PortfolioData = {
   experiences: PublicExperience[];
   projects: PublicProject[];
   socialLinks: PublicSocialLink[];
+  techStacks: PublicTechStack[];
   settings: PublicSettings;
 };
 

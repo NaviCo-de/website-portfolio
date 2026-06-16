@@ -61,6 +61,17 @@ type SocialLink = {
   updatedAt: Date;
 };
 
+type TechStack = {
+  id: string;
+  name: string;
+  category: string;
+  imageUrl: string | null;
+  isActive: boolean;
+  sortOrder: number;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 type ContactMessage = {
   id: string;
   email: string;
@@ -88,6 +99,7 @@ type AdminDashboardData = {
   experiences: number;
   projects: number;
   socialLinks: number;
+  techStacks: number;
   messages: number;
   latestMessage: ContactMessage | null;
   latestSettings: SiteSetting | null;
@@ -99,6 +111,7 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
       experiences,
       projects,
       socialLinks,
+      techStacks,
       messages,
       latestMessage,
       latestSettings,
@@ -106,6 +119,7 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
       prisma.experience.count(),
       prisma.project.count(),
       prisma.socialLink.count(),
+      prisma.techStack.count(),
       prisma.contactMessage.count(),
       prisma.contactMessage.findFirst({ orderBy: { createdAt: "desc" } }),
       prisma.siteSetting.findFirst({ orderBy: { updatedAt: "desc" } }),
@@ -115,6 +129,7 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
       experiences,
       projects,
       socialLinks,
+      techStacks,
       messages,
       latestMessage,
       latestSettings,
@@ -124,6 +139,7 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
       experiences: 0,
       projects: 0,
       socialLinks: 0,
+      techStacks: 0,
       messages: 0,
       latestMessage: null,
       latestSettings: null,
@@ -164,6 +180,12 @@ export async function getProjectsForAdmin(): Promise<Project[]> {
 export async function getSocialLinksForAdmin(): Promise<SocialLink[]> {
   return prisma.socialLink
     .findMany({ orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }] })
+    .catch(() => []);
+}
+
+export async function getTechStacksForAdmin(): Promise<TechStack[]> {
+  return prisma.techStack
+    .findMany({ orderBy: [{ sortOrder: "asc" }, { name: "asc" }] })
     .catch(() => []);
 }
 

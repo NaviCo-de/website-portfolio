@@ -13,24 +13,49 @@ import {
   Menu,
   Rocket,
   Send,
-  Server,
   X,
 } from "lucide-react";
 import { FaGithub, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import { useTypewriter } from "@/hooks/useTypewriter";
-import type { PortfolioData, PublicSocialLink } from "@/lib/types";
+import type {
+  PortfolioData,
+  PublicSocialLink,
+  PublicTechStack,
+} from "@/lib/types";
 import { cn, formatDateRange } from "@/lib/utils";
 
 const navItems = [
   { href: "#home", label: "Home", sectionId: "home" },
   { href: "#about", label: "About", sectionId: "about" },
   { href: "#experience", label: "Experience", sectionId: "experience" },
+  { href: "#tech-stack", label: "Stack", sectionId: "tech-stack" },
   { href: "#projects", label: "Projects", sectionId: "projects" },
   { href: "#contact", label: "Contact", sectionId: "contact" },
 ];
 
 const cvDownloadUrl =
   "https://drive.google.com/file/d/1fapIQZiLej8iQmQ7fbUb4n-hL03usqVs/view?usp=sharing";
+
+const categoryAccentClasses = [
+  "border-emerald-300/35 bg-emerald-300/10 text-emerald-100",
+  "border-cyan-300/35 bg-cyan-300/10 text-cyan-100",
+  "border-amber-300/35 bg-amber-300/10 text-amber-100",
+  "border-rose-300/35 bg-rose-300/10 text-rose-100",
+  "border-violet-300/35 bg-violet-300/10 text-violet-100",
+];
+
+function categoryAccent(index: number) {
+  return categoryAccentClasses[index % categoryAccentClasses.length];
+}
+
+function techInitials(name: string) {
+  return name
+    .split(/\s+|&|\./)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0]?.toUpperCase())
+    .join("");
+}
 
 function SocialIcon({ icon }: { icon: string | null }) {
   const normalized = icon?.toLowerCase();
@@ -298,8 +323,7 @@ function HeroSection({ data }: { data: PortfolioData }) {
                 sizes="(min-width: 1024px) 28rem, 100vw"
                 className="object-cover"
               />
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/88 to-transparent p-6">
-              </div>
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/88 to-transparent p-6"></div>
             </div>
           </div>
           <HeroSocials socialLinks={socialLinks} />
@@ -415,6 +439,169 @@ function ExperienceSection({ data }: { data: PortfolioData }) {
                     </div>
                   </div>
                 </motion.article>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </AnimatedSection>
+  );
+}
+
+function TechStackSection({ data }: { data: PortfolioData }) {
+  const techStacks = data.techStacks;
+  const groupedTechStacks = useMemo(() => {
+    const groups = new Map<string, PublicTechStack[]>();
+
+    for (const tech of techStacks) {
+      const current = groups.get(tech.category) ?? [];
+      current.push(tech);
+      groups.set(tech.category, current);
+    }
+
+    return Array.from(groups.entries()).map(([category, items]) => ({
+      category,
+      items,
+    }));
+  }, [techStacks]);
+
+  return (
+    <AnimatedSection
+      id="tech-stack"
+      className="px-5 py-20 sm:px-8 lg:px-10"
+    >
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-12 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase text-emerald-300">
+              Tech Stack
+            </p>
+            <h2 className="mt-2 text-3xl font-semibold tracking-normal text-slate-50 sm:text-4xl">
+              Tools I Use to Ship Products
+            </h2>
+          </div>
+          <p className="max-w-xl text-sm leading-7 text-slate-400">
+            A categorized view of the frameworks, platforms, languages, and
+            delivery tools behind my engineering workflow.
+          </p>
+        </div>
+
+        {techStacks.length === 0 ? (
+          <p className="rounded-xl border border-slate-400/15 bg-slate-900/60 p-6 text-slate-400">
+            No tech stack entries added yet.
+          </p>
+        ) : (
+          <div className="grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
+            <div className="rounded-2xl border border-slate-400/15 bg-slate-900/55 p-6 shadow-xl shadow-slate-950/35 backdrop-blur">
+              <div className="flex items-end justify-between gap-4 border-b border-slate-500/15 pb-5">
+                <div>
+                  <p className="text-sm text-slate-400">Current toolkit</p>
+                  <p className="mt-2 text-4xl font-semibold text-slate-50">
+                    {techStacks.length}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-slate-400">Categories</p>
+                  <p className="mt-2 text-4xl font-semibold text-emerald-200">
+                    {groupedTechStacks.length}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 space-y-4">
+                {groupedTechStacks.map((group, index) => (
+                  <div key={group.category}>
+                    <div className="mb-2 flex items-center justify-between gap-3">
+                      <span
+                        className={cn(
+                          "rounded-full border px-3 py-1 text-xs font-semibold",
+                          categoryAccent(index),
+                        )}
+                      >
+                        {group.category}
+                      </span>
+                      <span className="font-mono text-xs text-slate-500">
+                        {String(group.items.length).padStart(2, "0")}
+                      </span>
+                    </div>
+                    <div className="h-1.5 overflow-hidden rounded-full bg-slate-800">
+                      <div
+                        className="h-full rounded-full bg-emerald-300"
+                        style={{
+                          width:
+                            String(
+                              Math.max(
+                                18,
+                                (group.items.length / techStacks.length) * 100,
+                              ),
+                            ) + "%",
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-8">
+              {groupedTechStacks.map((group, groupIndex) => (
+                <div key={group.category}>
+                  <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                    <h3 className="text-lg font-semibold text-slate-50">
+                      {group.category}
+                    </h3>
+                    <span
+                      className={cn(
+                        "rounded-full border px-3 py-1 text-xs font-semibold",
+                        categoryAccent(groupIndex),
+                      )}
+                    >
+                      {group.items.length} tools
+                    </span>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                    {group.items.map((tech, index) => (
+                      <motion.div
+                        key={tech.id}
+                        initial={{ opacity: 0, y: 18 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: false, amount: 0.3 }}
+                        transition={{
+                          duration: 0.42,
+                          delay: Math.min(index * 0.04, 0.18),
+                        }}
+                        className="group relative min-h-28 overflow-hidden rounded-2xl border border-slate-400/15 bg-slate-900/70 p-4 shadow-lg shadow-slate-950/25 transition hover:-translate-y-1 hover:border-emerald-300/45 hover:bg-slate-900"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-slate-500/15 bg-slate-950/75">
+                            {tech.imageUrl ? (
+                              <Image
+                                src={tech.imageUrl}
+                                alt={tech.name + " logo"}
+                                width={42}
+                                height={42}
+                                sizes="42px"
+                                className="max-h-11 w-auto object-contain transition group-hover:scale-110"
+                              />
+                            ) : (
+                              <span className="text-sm font-semibold text-emerald-200">
+                                {techInitials(tech.name)}
+                              </span>
+                            )}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="truncate text-base font-semibold text-slate-50">
+                              {tech.name}
+                            </p>
+                            <p className="mt-1 text-xs text-slate-500">
+                              {group.category}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           </div>
@@ -691,6 +878,7 @@ export function PortfolioHome({ data }: { data: PortfolioData }) {
       <HeroSection data={data} />
       <AboutSection data={data} />
       <ExperienceSection data={data} />
+      <TechStackSection data={data} />
       <ProjectsSection data={data} />
       <ContactSection />
       <Footer data={data} />

@@ -4,10 +4,20 @@ import type { PortfolioData } from "@/lib/types";
 
 export async function getPublicPortfolioData(): Promise<PortfolioData> {
   try {
-    const [profile, about, experiences, projects, socialLinks, settings] = await Promise.all([
+    const [
+      profile,
+      about,
+      experiences,
+      projects,
+      socialLinks,
+      techStacks,
+      settings,
+    ] = await Promise.all([
       prisma.profile.findFirst({ orderBy: { updatedAt: "desc" } }),
       prisma.about.findFirst({ orderBy: { updatedAt: "desc" } }),
-      prisma.experience.findMany({ orderBy: [{ startDate: "desc" }, { createdAt: "desc" }] }),
+      prisma.experience.findMany({
+        orderBy: [{ startDate: "desc" }, { createdAt: "desc" }],
+      }),
       prisma.project.findMany({
         where: { isFeatured: true },
         orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
@@ -15,6 +25,10 @@ export async function getPublicPortfolioData(): Promise<PortfolioData> {
       prisma.socialLink.findMany({
         where: { isActive: true },
         orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+      }),
+      prisma.techStack.findMany({
+        where: { isActive: true },
+        orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
       }),
       prisma.siteSetting.findFirst({ orderBy: { updatedAt: "desc" } }),
     ]);
@@ -31,7 +45,11 @@ export async function getPublicPortfolioData(): Promise<PortfolioData> {
           }
         : fallbackPortfolioData.profile,
       about: about
-        ? { title: about.title, subtitle: about.subtitle, description: about.description }
+        ? {
+            title: about.title,
+            subtitle: about.subtitle,
+            description: about.description,
+          }
         : fallbackPortfolioData.about,
       experiences:
         experiences.length > 0
@@ -67,12 +85,24 @@ export async function getPublicPortfolioData(): Promise<PortfolioData> {
               icon: socialLink.icon,
             }))
           : fallbackPortfolioData.socialLinks,
+      techStacks:
+        techStacks.length > 0
+          ? techStacks.map((techStack) => ({
+              id: techStack.id,
+              name: techStack.name,
+              category: techStack.category,
+              imageUrl: techStack.imageUrl,
+            }))
+          : fallbackPortfolioData.techStacks,
       settings: settings
         ? {
             siteTitle: settings.siteTitle,
             metaDescription: settings.metaDescription,
             ownerEmail: settings.ownerEmail,
-            heroRoles: settings.heroRoles.length > 0 ? settings.heroRoles : fallbackPortfolioData.settings.heroRoles,
+            heroRoles:
+              settings.heroRoles.length > 0
+                ? settings.heroRoles
+                : fallbackPortfolioData.settings.heroRoles,
             primaryColor: settings.primaryColor,
             seoTitle: settings.seoTitle,
             seoDescription: settings.seoDescription,
