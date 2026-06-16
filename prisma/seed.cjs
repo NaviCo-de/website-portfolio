@@ -13,42 +13,48 @@ const prisma = new PrismaClient({ adapter });
 const defaultTechStacks = [
   {
     name: "Next.js",
-    category: "Frontend Framework",
+    category: "Frameworks",
+    iconKey: "devicon:nextjs",
     imageUrl:
       "https://res.cloudinary.com/demo/image/fetch/f_png,w_256/https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg",
     sortOrder: 1,
   },
   {
     name: "Nest.js",
-    category: "Backend Framework",
+    category: "Frameworks",
+    iconKey: "devicon:nestjs",
     imageUrl:
       "https://res.cloudinary.com/demo/image/fetch/f_png,w_256/https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nestjs/nestjs-original.svg",
     sortOrder: 2,
   },
   {
     name: "AWS",
-    category: "Cloud & Infrastructure",
+    category: "Infrastructure",
+    iconKey: "devicon:amazonwebservices-wordmark",
     imageUrl:
       "https://res.cloudinary.com/demo/image/fetch/f_png,w_256/https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg",
     sortOrder: 3,
   },
   {
     name: "Linux",
-    category: "Cloud & Infrastructure",
+    category: "Infrastructure",
+    iconKey: "devicon:linux",
     imageUrl:
       "https://res.cloudinary.com/demo/image/fetch/f_png,w_256/https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg",
     sortOrder: 4,
   },
   {
     name: "Tailwind CSS",
-    category: "Frontend Framework",
+    category: "Frameworks",
+    iconKey: "devicon:tailwindcss",
     imageUrl:
       "https://res.cloudinary.com/demo/image/fetch/f_png,w_256/https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg",
     sortOrder: 5,
   },
   {
     name: "PostgreSQL",
-    category: "Data Layer",
+    category: "Programming Language",
+    iconKey: "devicon:postgresql",
     imageUrl:
       "https://res.cloudinary.com/demo/image/fetch/f_png,w_256/https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg",
     sortOrder: 6,
@@ -56,13 +62,15 @@ const defaultTechStacks = [
   {
     name: "Python",
     category: "Programming Language",
+    iconKey: "devicon:python",
     imageUrl:
       "https://res.cloudinary.com/demo/image/fetch/f_png,w_256/https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
     sortOrder: 7,
   },
   {
     name: "Prisma",
-    category: "Data Layer",
+    category: "Frameworks",
+    iconKey: "devicon:prisma",
     imageUrl:
       "https://res.cloudinary.com/demo/image/fetch/f_png,w_256/https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prisma/prisma-original.svg",
     sortOrder: 8,
@@ -70,27 +78,31 @@ const defaultTechStacks = [
   {
     name: "Java",
     category: "Programming Language",
+    iconKey: "devicon:java",
     imageUrl:
       "https://res.cloudinary.com/demo/image/fetch/f_png,w_256/https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg",
     sortOrder: 9,
   },
   {
     name: "Docker",
-    category: "Cloud & Infrastructure",
+    category: "Infrastructure",
+    iconKey: "devicon:docker",
     imageUrl:
       "https://res.cloudinary.com/demo/image/fetch/f_png,w_256/https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg",
     sortOrder: 10,
   },
   {
     name: "Git & GitHub",
-    category: "Developer Workflow",
+    category: "Tools",
+    iconKey: "devicon:github",
     imageUrl:
       "https://res.cloudinary.com/demo/image/fetch/f_png,w_256/https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg",
     sortOrder: 11,
   },
   {
     name: "Postman",
-    category: "Developer Workflow",
+    category: "Tools",
+    iconKey: "devicon:postman",
     imageUrl:
       "https://res.cloudinary.com/demo/image/fetch/f_png,w_256/https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original.svg",
     sortOrder: 12,

@@ -1,14 +1,19 @@
-import Image from "next/image";
 import {
   CheckboxField,
   FormGrid,
   PageHeader,
+  SelectField,
   TextField,
   buttonClass,
   dangerButtonClass,
   panelClass,
 } from "@/components/admin/AdminUi";
+import { TechStackLogo } from "@/components/TechStackLogo";
 import { getTechStacksForAdmin } from "@/lib/admin-data";
+import {
+  TECH_STACK_CATEGORY_VALUES,
+  normalizeTechStackCategory,
+} from "@/lib/tech-stack";
 import {
   createTechStackAction,
   deleteTechStackAction,
@@ -24,7 +29,7 @@ export default async function AdminTechStackPage() {
     <div>
       <PageHeader
         title="Tech Stack"
-        description="Manage the technology matrix shown on the public portfolio. Use Cloudinary URLs for clean, optimized logos."
+        description="Manage the technology matrix shown on the public portfolio. Prefer Iconify keys like devicon:nextjs, with Cloudinary URLs available as custom fallbacks."
       />
 
       <section className={`${panelClass} max-w-5xl`}>
@@ -39,11 +44,17 @@ export default async function AdminTechStackPage() {
               required
               placeholder="Next.js"
             />
-            <TextField
+            <SelectField
               label="Category"
               name="category"
               required
-              placeholder="Frontend Framework"
+              defaultValue="Frameworks"
+              options={TECH_STACK_CATEGORY_VALUES}
+            />
+            <TextField
+              label="Iconify icon key"
+              name="iconKey"
+              placeholder="devicon:nextjs"
             />
             <TextField
               label="Cloudinary image URL"
@@ -71,26 +82,26 @@ export default async function AdminTechStackPage() {
               <summary className="cursor-pointer list-none">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                   <div className="flex min-w-0 items-center gap-4">
-                    <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-slate-500/15 bg-slate-950/70">
-                      {tech.imageUrl ? (
-                        <Image
-                          src={tech.imageUrl}
-                          alt={tech.name + " logo"}
-                          width={40}
-                          height={40}
-                          className="max-h-10 w-auto object-contain"
-                        />
-                      ) : (
-                        <span className="text-sm font-semibold text-emerald-200">
-                          {tech.name.slice(0, 2).toUpperCase()}
-                        </span>
-                      )}
-                    </div>
+                    <TechStackLogo
+                      name={tech.name}
+                      iconKey={tech.iconKey}
+                      imageUrl={tech.imageUrl}
+                      className="bg-slate-950/70"
+                      iconClassName="h-10 w-10"
+                      imageClassName="max-h-10"
+                    />
                     <div className="min-w-0">
                       <h3 className="text-lg font-semibold text-slate-50">
                         {tech.name}
                       </h3>
-                      <p className="text-sm text-slate-400">{tech.category}</p>
+                      <p className="text-sm text-slate-400">
+                        {normalizeTechStackCategory(tech.category, tech.name)}
+                      </p>
+                      {tech.iconKey ? (
+                        <p className="mt-1 font-mono text-xs text-emerald-200/80">
+                          {tech.iconKey}
+                        </p>
+                      ) : null}
                     </div>
                   </div>
                   <span className="w-fit rounded-full border border-slate-500/20 px-3 py-1 text-xs text-slate-300">
@@ -108,11 +119,21 @@ export default async function AdminTechStackPage() {
                       required
                       defaultValue={tech.name}
                     />
-                    <TextField
+                    <SelectField
                       label="Category"
                       name="category"
                       required
-                      defaultValue={tech.category}
+                      defaultValue={normalizeTechStackCategory(
+                        tech.category,
+                        tech.name,
+                      )}
+                      options={TECH_STACK_CATEGORY_VALUES}
+                    />
+                    <TextField
+                      label="Iconify icon key"
+                      name="iconKey"
+                      defaultValue={tech.iconKey}
+                      placeholder="devicon:nextjs"
                     />
                     <TextField
                       label="Cloudinary image URL"

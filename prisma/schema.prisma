@@ -79,6 +79,7 @@ model TechStack {
   id        String   @id @default(cuid())
   name      String
   category  String
+  iconKey   String?
   imageUrl  String?
   isActive  Boolean  @default(true)
   sortOrder Int      @default(0)

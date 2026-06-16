@@ -204,6 +204,7 @@ function techStackData(formData: FormData) {
   return {
     name: formString(formData, "name"),
     category: formString(formData, "category"),
+    iconKey: formString(formData, "iconKey"),
     imageUrl: formString(formData, "imageUrl"),
     isActive: formBoolean(formData, "isActive"),
     sortOrder: Number(formString(formData, "sortOrder") || 0),

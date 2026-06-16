@@ -65,6 +65,7 @@ type TechStack = {
   id: string;
   name: string;
   category: string;
+  iconKey: string | null;
   imageUrl: string | null;
   isActive: boolean;
   sortOrder: number;

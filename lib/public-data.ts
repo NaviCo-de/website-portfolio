@@ -1,5 +1,6 @@
 import { fallbackPortfolioData } from "@/lib/fallback-data";
 import { prisma } from "@/lib/prisma";
+import { normalizeTechStackCategory } from "@/lib/tech-stack";
 import type { PortfolioData } from "@/lib/types";
 
 export async function getPublicPortfolioData(): Promise<PortfolioData> {
@@ -90,7 +91,11 @@ export async function getPublicPortfolioData(): Promise<PortfolioData> {
           ? techStacks.map((techStack) => ({
               id: techStack.id,
               name: techStack.name,
-              category: techStack.category,
+              category: normalizeTechStackCategory(
+                techStack.category,
+                techStack.name,
+              ),
+              iconKey: techStack.iconKey,
               imageUrl: techStack.imageUrl,
             }))
           : fallbackPortfolioData.techStacks,

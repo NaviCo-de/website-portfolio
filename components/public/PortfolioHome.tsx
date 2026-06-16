@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { TechStackLogo } from "@/components/TechStackLogo";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
@@ -25,6 +26,12 @@ import type {
   PublicSocialLink,
   PublicTechStack,
 } from "@/lib/types";
+import {
+  TECH_STACK_CATEGORY_DETAILS,
+  TECH_STACK_CATEGORY_VALUES,
+  normalizeTechStackCategory,
+  type TechStackCategory,
+} from "@/lib/tech-stack";
 import { cn, formatDateRange } from "@/lib/utils";
 
 const navItems = [
@@ -49,15 +56,6 @@ const categoryAccentClasses = [
 
 function categoryAccent(index: number) {
   return categoryAccentClasses[index % categoryAccentClasses.length];
-}
-
-function techInitials(name: string) {
-  return name
-    .split(/\s+|&|\./)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((word) => word[0]?.toUpperCase())
-    .join("");
 }
 
 function SocialIcon({ icon }: { icon: string | null }) {
@@ -453,20 +451,40 @@ function ExperienceSection({ data }: { data: PortfolioData }) {
 
 function TechStackSection({ data }: { data: PortfolioData }) {
   const techStacks = data.techStacks;
-  const groupedTechStacks = useMemo(() => {
-    const groups = new Map<string, PublicTechStack[]>();
+  const [activeTechCategory, setActiveTechCategory] =
+    useState<TechStackCategory>("Programming Language");
 
-    for (const tech of techStacks) {
-      const current = groups.get(tech.category) ?? [];
-      current.push(tech);
-      groups.set(tech.category, current);
+  const groupedTechStacks = useMemo(() => {
+    const groups = new Map<TechStackCategory, PublicTechStack[]>();
+
+    for (const category of TECH_STACK_CATEGORY_VALUES) {
+      groups.set(category, []);
     }
 
-    return Array.from(groups.entries()).map(([category, items]) => ({
+    for (const tech of techStacks) {
+      const category = normalizeTechStackCategory(tech.category, tech.name);
+      const current = groups.get(category) ?? [];
+
+      current.push({ ...tech, category });
+      groups.set(category, current);
+    }
+
+    return TECH_STACK_CATEGORY_VALUES.map((category) => ({
       category,
-      items,
+      items: groups.get(category) ?? [],
     }));
   }, [techStacks]);
+
+  const activeGroup =
+    groupedTechStacks.find((group) => group.category === activeTechCategory) ??
+    groupedTechStacks[0];
+  const activeGroupIndex = Math.max(
+    0,
+    groupedTechStacks.findIndex(
+      (group) => group.category === activeGroup.category,
+    ),
+  );
+  const activeDetails = TECH_STACK_CATEGORY_DETAILS[activeGroup.category];
 
   return (
     <AnimatedSection id="tech-stack" className="px-5 py-20 sm:px-8 lg:px-10">
@@ -477,12 +495,12 @@ function TechStackSection({ data }: { data: PortfolioData }) {
               Tech Stack
             </p>
             <h2 className="mt-2 text-3xl font-semibold tracking-normal text-slate-50 sm:text-4xl">
-              Tools I Use to Ship Products
+              Focused Toolkit
             </h2>
           </div>
           <p className="max-w-xl text-sm leading-7 text-slate-400">
-            A categorized view of the frameworks, platforms, languages, and
-            delivery tools behind my engineering workflow.
+            A cleaner view of the languages, frameworks, infrastructure, and
+            workflow tools I use to build and ship products.
           </p>
         </div>
 
@@ -491,119 +509,118 @@ function TechStackSection({ data }: { data: PortfolioData }) {
             No tech stack entries added yet.
           </p>
         ) : (
-          <div className="grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
-            <div className="rounded-2xl border border-slate-400/15 bg-slate-900/55 p-6 shadow-xl shadow-slate-950/35 backdrop-blur">
-              <div className="flex items-end justify-between gap-4 border-b border-slate-500/15 pb-5">
-                <div>
-                  <p className="text-sm text-slate-400">Current toolkit</p>
-                  <p className="mt-2 text-4xl font-semibold text-slate-50">
-                    {techStacks.length}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm text-slate-400">Categories</p>
-                  <p className="mt-2 text-4xl font-semibold text-emerald-200">
-                    {groupedTechStacks.length}
-                  </p>
-                </div>
-              </div>
+          <div className="rounded-3xl border border-slate-400/15 bg-slate-900/55 p-4 shadow-xl shadow-slate-950/35 backdrop-blur sm:p-6">
+            <div
+              role="tablist"
+              aria-label="Tech stack categories"
+              className="grid gap-3 md:grid-cols-4"
+            >
+              {groupedTechStacks.map((group, index) => {
+                const isActive = group.category === activeGroup.category;
 
-              <div className="mt-6 space-y-4">
-                {groupedTechStacks.map((group, index) => (
-                  <div key={group.category}>
-                    <div className="mb-2 flex items-center justify-between gap-3">
-                      <span
-                        className={cn(
-                          "rounded-full border px-3 py-1 text-xs font-semibold",
-                          categoryAccent(index),
-                        )}
-                      >
-                        {group.category}
-                      </span>
-                      <span className="font-mono text-xs text-slate-500">
-                        {String(group.items.length).padStart(2, "0")}
-                      </span>
-                    </div>
-                    <div className="h-1.5 overflow-hidden rounded-full bg-slate-800">
-                      <div
-                        className="h-full rounded-full bg-emerald-300"
-                        style={{
-                          width:
-                            String(
-                              Math.max(
-                                18,
-                                (group.items.length / techStacks.length) * 100,
-                              ),
-                            ) + "%",
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-8">
-              {groupedTechStacks.map((group, groupIndex) => (
-                <div key={group.category}>
-                  <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                    <h3 className="text-lg font-semibold text-slate-50">
-                      {group.category}
-                    </h3>
+                return (
+                  <button
+                    key={group.category}
+                    type="button"
+                    role="tab"
+                    aria-selected={isActive}
+                    onClick={() => setActiveTechCategory(group.category)}
+                    className={cn(
+                      "flex min-h-24 flex-col justify-between rounded-2xl border p-4 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300",
+                      isActive
+                        ? "border-emerald-300/60 bg-emerald-300/12 shadow-lg shadow-emerald-950/25"
+                        : "border-slate-500/15 bg-slate-950/45 hover:border-slate-300/30 hover:bg-slate-900/70",
+                    )}
+                  >
                     <span
                       className={cn(
-                        "rounded-full border px-3 py-1 text-xs font-semibold",
-                        categoryAccent(groupIndex),
+                        "text-sm font-semibold",
+                        isActive ? "text-emerald-100" : "text-slate-300",
                       )}
                     >
-                      {group.items.length} tools
+                      {group.category}
                     </span>
+                    <span
+                      className={cn(
+                        "mt-5 inline-flex w-fit rounded-full border px-2.5 py-1 font-mono text-xs",
+                        isActive
+                          ? categoryAccent(index)
+                          : "border-slate-500/15 text-slate-500",
+                      )}
+                    >
+                      {String(group.items.length).padStart(2, "0")} items
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={activeGroup.category}
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -14 }}
+                transition={{ duration: 0.32, ease: "easeOut" }}
+                className="mt-8"
+              >
+                <div className="mb-5 flex flex-col gap-4 border-b border-slate-500/15 pb-5 md:flex-row md:items-end md:justify-between">
+                  <div>
+                    <span
+                      className={cn(
+                        "inline-flex rounded-full border px-3 py-1 text-xs font-semibold",
+                        categoryAccent(activeGroupIndex),
+                      )}
+                    >
+                      {activeGroup.category}
+                    </span>
+                    <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">
+                      {activeDetails.description}
+                    </p>
                   </div>
-                  <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                    {group.items.map((tech, index) => (
+                </div>
+
+                {activeGroup.items.length === 0 ? (
+                  <p className="rounded-2xl border border-slate-400/15 bg-slate-950/45 p-6 text-sm text-slate-400">
+                    No tech stack entries in this category yet.
+                  </p>
+                ) : (
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {activeGroup.items.map((tech, index) => (
                       <motion.div
                         key={tech.id}
-                        initial={{ opacity: 0, y: 18 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: false, amount: 0.3 }}
+                        initial={{ opacity: 0, y: 14 }}
+                        animate={{ opacity: 1, y: 0 }}
                         transition={{
-                          duration: 0.42,
-                          delay: Math.min(index * 0.04, 0.18),
+                          duration: 0.32,
+                          delay: Math.min(index * 0.04, 0.16),
                         }}
-                        className="group relative min-h-28 overflow-hidden rounded-2xl border border-slate-400/15 bg-slate-900/70 p-4 shadow-lg shadow-slate-950/25 transition hover:-translate-y-1 hover:border-emerald-300/45 hover:bg-slate-900"
+                        className="group relative min-h-36 overflow-hidden rounded-2xl border border-slate-400/15 bg-slate-950/55 p-5 shadow-lg shadow-slate-950/20 transition hover:-translate-y-1 hover:border-emerald-300/45 hover:bg-slate-900/80"
                       >
-                        <div className="flex items-center gap-4">
-                          <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-slate-500/15 bg-slate-950/75">
-                            {tech.imageUrl ? (
-                              <Image
-                                src={tech.imageUrl}
-                                alt={tech.name + " logo"}
-                                width={42}
-                                height={42}
-                                sizes="42px"
-                                className="max-h-11 w-auto object-contain transition group-hover:scale-110"
-                              />
-                            ) : (
-                              <span className="text-sm font-semibold text-emerald-200">
-                                {techInitials(tech.name)}
-                              </span>
-                            )}
-                          </div>
+                        <div className="flex h-full flex-col justify-between gap-6">
+                          <TechStackLogo
+                            name={tech.name}
+                            iconKey={tech.iconKey}
+                            imageUrl={tech.imageUrl}
+                            className="h-16 w-16 rounded-2xl"
+                            iconClassName="h-11 w-11"
+                            imageClassName="max-h-11"
+                          />
                           <div className="min-w-0">
                             <p className="truncate text-base font-semibold text-slate-50">
                               {tech.name}
                             </p>
                             <p className="mt-1 text-xs text-slate-500">
-                              {group.category}
+                              {activeDetails.shortLabel}
                             </p>
                           </div>
                         </div>
                       </motion.div>
                     ))}
                   </div>
-                </div>
-              ))}
-            </div>
+                )}
+              </motion.div>
+            </AnimatePresence>
           </div>
         )}
       </div>

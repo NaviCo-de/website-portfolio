@@ -45,6 +45,7 @@ export type PublicTechStack = {
   id: string;
   name: string;
   category: string;
+  iconKey: string | null;
   imageUrl: string | null;
 };
 

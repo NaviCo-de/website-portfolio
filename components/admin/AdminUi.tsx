@@ -62,6 +62,38 @@ export function TextField({
   );
 }
 
+export function SelectField({
+  label,
+  name,
+  defaultValue,
+  required = false,
+  options,
+}: {
+  label: string;
+  name: string;
+  defaultValue?: string | null;
+  required?: boolean;
+  options: readonly string[];
+}) {
+  return (
+    <label className="block text-sm font-medium text-slate-200">
+      {label}
+      <select
+        name={name}
+        required={required}
+        defaultValue={defaultValue ?? options[0] ?? ""}
+        className={inputClass}
+      >
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
 export function TextareaField({
   label,
   name,

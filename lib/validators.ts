@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { normalizeTechStackCategory } from "@/lib/tech-stack";
 import { nullableString, parseList, sanitizeText } from "@/lib/utils";
 
 const emptyToNull = (value: unknown) => nullableString(value);
@@ -132,7 +133,8 @@ export const techStackSchema = z.object({
     .trim()
     .min(1)
     .max(80)
-    .transform((value) => sanitizeText(value, 80)),
+    .transform((value) => normalizeTechStackCategory(sanitizeText(value, 80))),
+  iconKey: z.string().trim().max(120).optional().transform(emptyToNull),
   imageUrl: z.string().optional().transform(emptyToNull),
   isActive: z.coerce.boolean().default(true),
   sortOrder: z.coerce.number().int().default(0),
