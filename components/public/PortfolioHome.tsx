@@ -7,6 +7,7 @@ import {
   ArrowDown,
   CalendarDays,
   Code2,
+  Download,
   ExternalLink,
   Mail,
   Menu,
@@ -27,6 +28,9 @@ const navItems = [
   { href: "#projects", label: "Projects", sectionId: "projects" },
   { href: "#contact", label: "Contact", sectionId: "contact" },
 ];
+
+const cvDownloadUrl =
+  "https://drive.google.com/file/d/1fapIQZiLej8iQmQ7fbUb4n-hL03usqVs/view?usp=sharing";
 
 function SocialIcon({ icon }: { icon: string | null }) {
   const normalized = icon?.toLowerCase();
@@ -260,6 +264,15 @@ function HeroSection({ data }: { data: PortfolioData }) {
               <Mail aria-hidden="true" className="h-4 w-4" />
               Contact Me
             </a>
+            <a
+              href={cvDownloadUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-emerald-300/40 bg-emerald-300/10 px-6 text-sm font-semibold text-emerald-100 transition hover:-translate-y-0.5 hover:border-emerald-300/70 hover:bg-emerald-300/15 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:ring-offset-2 focus:ring-offset-slate-950"
+            >
+              <Download aria-hidden="true" className="h-4 w-4" />
+              Download CV
+            </a>
           </div>
         </motion.div>
 
@@ -286,19 +299,6 @@ function HeroSection({ data }: { data: PortfolioData }) {
                 className="object-cover"
               />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/88 to-transparent p-6">
-                <div className="flex items-center gap-3 text-left">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-300 text-slate-950">
-                    <Server aria-hidden="true" className="h-5 w-5" />
-                  </span>
-                  <div>
-                    <p className="text-sm font-semibold text-slate-50">
-                      {profile.headline}
-                    </p>
-                    <p className="text-xs text-slate-400">
-                      Modern engineering practice
-                    </p>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
